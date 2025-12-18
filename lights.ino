@@ -15,7 +15,7 @@ uint16_t offset = 0;
 L3G gyro;
 
 const int16_t IDLE_THRESHOLD = 1000;
-const unsigned long IDLE_DELAY_MS = 30000;
+const unsigned long IDLE_DELAY_MS = 2000;
 const int BLOCK_SIZE = 16; // bigger blocks
 
 unsigned long lastMovementTime = 0;
@@ -62,6 +62,7 @@ void loop() {
   }
 
   if (!isIdle && now - lastMovementTime >= IDLE_DELAY_MS) {
+    last_update = now;
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
     isIdle = true;
@@ -88,3 +89,4 @@ void loop() {
     FastLED.show();
   }
 }
+
