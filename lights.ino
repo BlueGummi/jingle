@@ -62,7 +62,7 @@ void loop() {
   }
 
   if (!isIdle && now - lastMovementTime >= IDLE_DELAY_MS) {
-    last_update = now;
+    lastUpdate = now;
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
     isIdle = true;
