@@ -8,19 +8,21 @@
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
 #define SHOULD_TWINKLE true
+#define TWINKLE_SCALE 4
 
 CRGB leds[NUM_LEDS];
+CRGB lastPattern[NUM_LEDS];
 uint16_t offset = 0;
 
 L3G gyro;
 
 const int16_t IDLE_THRESHOLD = 1000;
-const unsigned long IDLE_DELAY_MS = 2000;
-const int BLOCK_SIZE = 16; // bigger blocks
+const unsigned long IDLE_DELAY_MS = 40000;
+const int BLOCK_SIZE = 8;
 
 unsigned long lastMovementTime = 0;
 unsigned long lastUpdate = 0;
-const unsigned long FRAME_MS = 120;
+const unsigned long FRAME_MS = 60;
 bool isIdle = false;
 
 void setup() {
@@ -58,11 +60,18 @@ void loop() {
 
   if (movementDetected) {
     lastMovementTime = now;
-    isIdle = false;
+
+    if (isIdle) {
+      memcpy(leds, lastPattern, sizeof(leds));
+      isIdle = false;
+    }
   }
 
   if (!isIdle && now - lastMovementTime >= IDLE_DELAY_MS) {
     lastUpdate = now;
+
+    memcpy(lastPattern, leds, sizeof(leds));
+
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
     isIdle = true;
@@ -70,9 +79,7 @@ void loop() {
 
   if (!isIdle && now - lastUpdate >= FRAME_MS) {
     lastUpdate = now;
-
-    int speed = map(abs(gx), 0, 150, 1, 12);
-    offset += max(speed, 1);
+    offset += 1;
 
     for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = ((i + offset) % (2 * BLOCK_SIZE) < BLOCK_SIZE) ? CRGB::Red
@@ -81,7 +88,7 @@ void loop() {
 
     if (SHOULD_TWINKLE) {
       uint8_t twinkleChance = map(abs(gy), 0, 150, 10, 400);
-      if (random8() < twinkleChance) {
+      if (random8() < twinkleChance * TWINKLE_SCALE) {
         leds[random16(NUM_LEDS)] = CRGB::White;
       }
     }
