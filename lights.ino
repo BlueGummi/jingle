@@ -4,7 +4,7 @@
 
 #define LED_PIN 6
 #define NUM_LEDS 180
-#define BRIGHTNESS 140
+#define BRIGHTNESS 120
 #define BRIGHTNESS_MIN 20
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
@@ -18,6 +18,12 @@
 #define BLOCK_SIZE 8
 #define FRAME_MS 60
 #define BREATH_SPEED 0.1
+#define NUM_COLORS 2
+
+CRGB colors[NUM_COLORS] = {
+  CRGB::Red,
+  CRGB::Green,
+};
 
 CRGB leds[NUM_LEDS];
 CRGB lastPattern[NUM_LEDS];
@@ -103,9 +109,9 @@ void loop() {
         map(sin(breathPhase) * 127 + 128, 0, 255, BRIGHTNESS_MIN, BRIGHTNESS);
 
     for (int i = 0; i < NUM_LEDS; i++) {
-      CRGB baseColor = ((i + offset) % (2 * BLOCK_SIZE) < BLOCK_SIZE)
-                           ? CRGB::Red
-                           : CRGB::Green;
+      int blockIndex = (i + offset) / BLOCK_SIZE;
+      CRGB baseColor = colors[blockIndex % NUM_COLORS];
+
       leds[i] = baseColor;
       leds[i].nscale8_video(breathFactor8);
     }
@@ -117,3 +123,4 @@ void loop() {
     FastLED.show();
   }
 }
+
