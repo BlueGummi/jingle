@@ -9,6 +9,9 @@
 #define COLOR_ORDER GRB
 #define SHOULD_TWINKLE true
 #define TWINKLE_SCALE 4
+#define FADE_STEPS 10
+#define FADE_SCALE 12
+#define FADE_DELAY_MS 20
 
 CRGB leds[NUM_LEDS];
 CRGB lastPattern[NUM_LEDS];
@@ -17,7 +20,7 @@ uint16_t offset = 0;
 L3G gyro;
 
 const int16_t IDLE_THRESHOLD = 1000;
-const unsigned long IDLE_DELAY_MS = 40000;
+const unsigned long IDLE_DELAY_MS = 4000;
 const int BLOCK_SIZE = 8;
 
 unsigned long lastMovementTime = 0;
@@ -71,6 +74,11 @@ void loop() {
     lastUpdate = now;
 
     memcpy(lastPattern, leds, sizeof(leds));
+    for (int fadeStep = 0; fadeStep < FADE_STEPS; fadeStep++) {
+      fadeToBlackBy(leds, NUM_LEDS, FADE_SCALE);
+      FastLED.show();
+      delay(FADE_DELAY_MS);
+    }
 
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
