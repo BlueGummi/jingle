@@ -4,7 +4,7 @@
 
 #define LED_PIN 6
 #define NUM_LEDS 180
-#define BRIGHTNESS 140
+#define BRIGHTNESS 120
 #define BRIGHTNESS_MIN 10
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
@@ -14,10 +14,10 @@
 #define FADE_SCALE 12
 #define FADE_DELAY_MS 20
 #define IDLE_THRESHOLD 1000
-#define IDLE_DELAY_MS 3000
+#define IDLE_DELAY_MS 40000
 #define BLOCK_SIZE 8
 #define FRAME_MS 60
-#define BREATH_SPEED 0.2
+#define BREATH_SPEED 0.25
 #define NUM_COLORS 2
 #define TWINKLE_DURATION 20
 
